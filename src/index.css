@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 340px;
+  grid-template-rows: 1fr;
+  height: 100vh;
+}
+
+.app-sidebar {
+  border-right: 1px solid rgb(229 231 235);
+  background: #ffffff;
+}
+
+.app-main {
+  background: #f9fafb;
+}
+
+.app-right-panel {
+  border-left: 1px solid rgb(229 231 235);
+  background: #ffffff;
+}
+
+.node-error {
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 1);
+}
+
+/* Small scrollbar improvement for logs */
+.scroll-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+}
