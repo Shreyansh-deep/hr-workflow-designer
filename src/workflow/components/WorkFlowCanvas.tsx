@@ -8,7 +8,7 @@ import ReactFlow, {
   applyNodeChanges,
   useReactFlow,
 } from 'reactflow';
-import type { NodeTypes, Connection, EdgeChange, NodeChange, OnConnectStartParams } from 'reactflow';
+import type { NodeTypes, Connection, EdgeChange, NodeChange } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
