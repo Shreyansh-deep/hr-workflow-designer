@@ -38,8 +38,8 @@ export function StartNodeForm({ data, onChange }: Props) {
         </p>
       )}
       <div className="space-y-2">
-        {metadataEntries.map(([key, value]) => (
-          <div key={key} className="flex gap-1">
+        {metadataEntries.map(([key, value], index) => (
+          <div key={index} className="flex gap-1">
             <input
               className="w-1/2 rounded-md border border-gray-300 px-2 py-1 text-[11px]"
               value={key}
