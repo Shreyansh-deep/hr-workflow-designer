@@ -40,15 +40,15 @@ export const WorkflowProvider: React.FC<{ children: React.ReactNode }> = ({
     setNodes((prev) =>
       prev.map((node) =>
         node.id === id
-          ? {
+          ? ({
               ...node,
               data: {
-                ...node.data,
-                ...patch,
+                ...(node.data as WorkflowNodeData),
+                ...(patch as WorkflowNodeData),
               },
-            }
+            } as WorkflowNode)
           : node,
-      ),
+      ) as WorkflowNode[],
     );
   };
 

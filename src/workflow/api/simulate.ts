@@ -1,84 +1,88 @@
 import type {
-    SimulationResult,
-    SimulationStep,
-    WorkflowGraph,
-    WorkflowNodeData,
-  } from '../types';
-  
-  function describeNode(data: WorkflowNodeData): string {
-    switch (data.type) {
-      case 'start':
-        return `Start workflow: ${data.label}`;
-      case 'task':
-        return `Task for ${data.assignee || 'unassigned'}: ${data.label}`;
-      case 'approval':
-        return `Approval by ${data.approverRole || 'Unknown role'}: ${data.label}`;
-      case 'automated':
-        return `Automated action ${data.actionId || 'not selected'}: ${data.label}`;
-      case 'end':
-        return `End workflow: ${data.endMessage || data.label}`;
-      default:
-        return data.label;
-    }
+  SimulationResult,
+  SimulationStep,
+  WorkflowGraph,
+  WorkflowNodeData,
+} from '../types';
+
+// Type guard to guarantee node data has a "label" field
+function hasLabel(data: any): data is WorkflowNodeData & { label: string } {
+  return typeof data?.label === 'string';
+}
+
+function describeNode(data: WorkflowNodeData): string {
+  switch (data.type) {
+    case 'start':
+      return `Start: ${data.label}`;
+    case 'task':
+      return `Task: ${data.label}`;
+    case 'approval':
+      return `Approval: ${data.label}`;
+    case 'automated':
+      return `Automated: ${data.label}`;
+    case 'end':
+      return `End: ${data.endMessage || data.label}`;
+    default:
+      return 'Unknown step';
   }
-  
-  // naive topological-style walk from any Start node
-  export async function simulateWorkflow(graph: WorkflowGraph): Promise<SimulationResult> {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-  
-    const { nodes, edges } = graph;
-  
-    const start = nodes.find((n) => n.data.type === 'start');
-    const steps: SimulationStep[] = [];
-    const errors: string[] = [];
-    const warnings: string[] = [];
-  
-    if (!start) {
-      errors.push('No Start node found.');
-      return { success: false, steps: [], errors, warnings };
-    }
-  
-    // BFS from start along outgoing edges
-    const visited = new Set<string>();
-    const queue: string[] = [start.id];
-  
-    let idx = 1;
-    while (queue.length > 0) {
-      const id = queue.shift()!;
-      if (visited.has(id)) continue;
-      visited.add(id);
-  
-      const node = nodes.find((n) => n.id === id);
-      if (!node) continue;
-  
-      const description = describeNode(node.data as WorkflowNodeData);
-      const status: SimulationStep['status'] =
-        node.data.type === 'automated' && !(node.data as any).actionId
-          ? 'warning'
-          : 'success';
-  
-      if (status === 'warning') {
-        warnings.push(`Automated node "${node.data.label}" has no selected action.`);
-      }
-  
-      steps.push({
-        index: idx++,
-        nodeId: node.id,
-        nodeLabel: node.data.label,
-        nodeType: node.data.type,
-        status,
-        message: description,
-      });
-  
-      const outgoing = edges.filter((e) => e.source === id).map((e) => e.target);
-      queue.push(...outgoing);
-    }
-  
-    return {
-      success: errors.length === 0,
-      steps,
-      errors,
-      warnings,
-    };
+}
+
+export async function simulateWorkflow(
+  graph: WorkflowGraph,
+): Promise<SimulationResult> {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+
+  const { nodes, edges } = graph;
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const steps: SimulationStep[] = [];
+
+  const start = nodes.find((n) => n.data.type === 'start');
+  if (!start) {
+    return { success: false, steps: [], errors: ['Missing Start node'], warnings };
   }
-  
+
+  const visited = new Set<string>();
+  const queue = [start.id];
+
+  let index = 1;
+  while (queue.length) {
+    const currentId = queue.shift()!;
+    if (visited.has(currentId)) continue;
+    visited.add(currentId);
+
+    const node = nodes.find((n) => n.id === currentId);
+    if (!node) continue;
+
+    if (!hasLabel(node.data)) {
+      errors.push(`Node ${node.id} missing label`);
+      continue;
+    }
+
+    let status: SimulationStep['status'] = 'success';
+    if (node.data.type === 'automated' && !('actionId' in node.data && node.data.actionId)) {
+      warnings.push(`Automated node "${node.data.label}" has no action selected`);
+      status = 'warning';
+    }
+
+    steps.push({
+      index,
+      nodeId: node.id,
+      nodeLabel: node.data.label,
+      nodeType: node.data.type,
+      status,
+      message: describeNode(node.data),
+    });
+    index++;
+
+    const outgoing = edges.filter((e) => e.source === currentId).map((e) => e.target);
+    queue.push(...outgoing);
+  }
+
+  return {
+    success: errors.length === 0,
+    steps,
+    errors,
+    warnings,
+  };
+}

@@ -175,7 +175,7 @@ export function WorkflowCanvas() {
     }
   };
 
-  const onConnectStart = (_: React.MouseEvent, _params: OnConnectStartParams) => {
+  const onConnectStart = () => {
     clearNodeErrors();
   };
 
