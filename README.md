@@ -1,73 +1,83 @@
-# React + TypeScript + Vite
+# HR Workflow Designer (React + React Flow)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A prototype HR Workflow Designer enabling admins to visually create and test HR workflows such as onboarding, approvals, and automated actions.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Architecture
 
-## React Compiler
+**Tech Stack**
+- React + TypeScript
+- React Flow (canvas, drag & drop, edges)
+- Tailwind CSS (UI styling)
+- Context API for workflow state
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Key Modules**
+- `workflow/types.ts`  
+  Strongly typed workflow model for node types, actions, and simulation
+- `workflow/WorkflowProvider.tsx`  
+  Central state for nodes, edges, and selected node
+- `workflow/components/WorkflowCanvas.tsx`  
+  React Flow canvas with drag & drop + connection logic
+- `workflow/components/Sidebar.tsx`  
+  Node library + drag source
+- `workflow/components/NodeConfigPanel.tsx` + `forms/*`  
+  Configurable forms for each node type
+- `workflow/components/TestPanel.tsx`  
+  Validation + mock simulation runner
+- `workflow/api/*`  
+  Mock `GET /automations` + `POST /simulate` endpoints
 
-## Expanding the ESLint configuration
+**Data Flow**
+Canvas → Node Selection → Config Panel Updates → Store  
+Test Panel → Validate Graph → Simulate → Show Log
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## How to Run
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Design Decisions
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+React Flow for Graph UI
+Instead of custom canvas → faster development + reliable interactions
+
+Modular Structure
+Canvas, forms, sandbox, and API mock kept isolated for scalability
+
+Type Safety First
+All workflow nodes strictly typed for correctness and future growth
+
+Mock API Abstraction
+Enables simple replacement with real backend later
+
+Validation Before Simulation
+Ensures structural correctness (Start node, End node, no cycles, etc.)
+
+## What Was Completed
+
+✔ All 5 node types: Start, Task, Approval, Automated, End
+✔ Drag-and-drop workflow building
+✔ Connection editing with edges
+✔ Type-specific dynamic configuration forms
+✔ GET /automations mock API
+✔ POST /simulate mock API
+✔ Workflow validation (Start/End, cycles, missing edges)
+✔ Sandbox with simulation execution log
+✔ Visual error feedback on nodes
+✔ Clean, scalable folder structure with Tailwind UI
+
+## What I Would Add With More Time
+
+• Export/Import workflow JSON
+• Undo/Redo history
+• Advanced validation + branch logic
+• Node templates & library of workflow examples
+• Real backend with persistence
+• Auto-layout and alignment helpers
+• Timeline-based or step-through workflow execution

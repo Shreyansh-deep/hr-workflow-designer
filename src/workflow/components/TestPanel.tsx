@@ -118,7 +118,7 @@ export function TestPanel() {
 
   return (
     <div className="flex h-[280px] flex-col px-4 py-3">
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between gap-2">
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
             Workflow Test / Sandbox
