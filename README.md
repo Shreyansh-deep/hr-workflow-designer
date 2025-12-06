@@ -61,23 +61,23 @@ Ensures structural correctness (Start node, End node, no cycles, etc.)
 
 ## What Was Completed
 
-✔ All 5 node types: Start, Task, Approval, Automated, End
-✔ Drag-and-drop workflow building
-✔ Connection editing with edges
-✔ Type-specific dynamic configuration forms
-✔ GET /automations mock API
-✔ POST /simulate mock API
-✔ Workflow validation (Start/End, cycles, missing edges)
-✔ Sandbox with simulation execution log
-✔ Visual error feedback on nodes
-✔ Clean, scalable folder structure with Tailwind UI
+- ✔ All 5 node types: Start, Task, Approval, Automated, End
+- ✔ Drag-and-drop workflow building
+- ✔ Connection editing with edges
+- ✔ Type-specific dynamic configuration forms
+- ✔ GET /automations mock API
+- ✔ POST /simulate mock API
+- ✔ Workflow validation (Start/End, cycles, missing edges)
+- ✔ Sandbox with simulation execution log
+- ✔ Visual error feedback on nodes
+- ✔ Clean, scalable folder structure with Tailwind UI
 
 ## What I Would Add With More Time
 
-• Export/Import workflow JSON
-• Undo/Redo history
-• Advanced validation + branch logic
-• Node templates & library of workflow examples
-• Real backend with persistence
-• Auto-layout and alignment helpers
-• Timeline-based or step-through workflow execution
+- • Export/Import workflow JSON
+- • Undo/Redo history
+- • Advanced validation + branch logic
+- • Node templates & library of workflow examples
+- • Real backend with persistence
+- • Auto-layout and alignment helpers
+- • Timeline-based or step-through workflow execution
